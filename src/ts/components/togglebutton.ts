@@ -15,6 +15,10 @@ export interface ToggleButtonConfig extends ButtonConfig {
    */
   offClass?: string;
   /**
+   * The CSS class that is used when no animation should be played on toggle.
+   */
+  skipAnimationClass?: string;
+  /**
    * The text on the button.
    */
   text?: string;
@@ -26,6 +30,7 @@ export interface ToggleButtonConfig extends ButtonConfig {
 export class ToggleButton<Config extends ToggleButtonConfig> extends Button<ToggleButtonConfig> {
 
   private onState: boolean;
+  private firstToggle: boolean = true;
 
   private toggleButtonEvents = {
     onToggle: new EventDispatcher<ToggleButton<Config>, NoArgs>(),
@@ -40,6 +45,7 @@ export class ToggleButton<Config extends ToggleButtonConfig> extends Button<Togg
       cssClass: 'ui-togglebutton',
       onClass: 'on',
       offClass: 'off',
+      skipAnimationClass: 'skip-animation',
     };
 
     this.config = this.mergeConfig(config, defaultConfig, this.config);
@@ -53,7 +59,7 @@ export class ToggleButton<Config extends ToggleButtonConfig> extends Button<Togg
   /**
    * Toggles the button to the 'on' state.
    */
-  on() {
+  on(animated = true) {
     if (this.isOff()) {
       const config = this.getConfig() as ToggleButtonConfig;
 
@@ -61,8 +67,16 @@ export class ToggleButton<Config extends ToggleButtonConfig> extends Button<Togg
       this.getDomElement().removeClass(this.prefixCss(config.offClass));
       this.getDomElement().addClass(this.prefixCss(config.onClass));
 
+      // TODO: firstToggle should be handled outside and included in the animated flag
+      if (!animated && this.firstToggle) {
+        this.getDomElement().addClass(this.prefixCss(config.skipAnimationClass));
+      } else {
+        this.getDomElement().removeClass(this.prefixCss(config.skipAnimationClass));
+      }
+
       this.onToggleEvent();
       this.onToggleOnEvent();
+      this.firstToggle = false;
     }
   }
 
@@ -70,6 +84,7 @@ export class ToggleButton<Config extends ToggleButtonConfig> extends Button<Togg
    * Toggles the button to the 'off' state.
    */
   off() {
+    // TODO: add animation feature here also
     if (this.isOn()) {
       const config = this.getConfig() as ToggleButtonConfig;
 

@@ -63,6 +63,11 @@
       transition: visibility 0s $animation-duration;
       visibility: hidden;
     }
+    &.#{$prefix}-skip-animation {
+      .#{$prefix}-image {
+        animation: none;
+      }
+    }
   }
 
   &.#{$prefix}-off {

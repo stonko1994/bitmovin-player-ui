@@ -34,7 +34,10 @@ export class PlaybackToggleButton extends ToggleButton<ToggleButtonConfig> {
       }
 
       if (player.isPlaying()) {
-        this.on();
+        const config = player.getConfig();
+        const animated = !(config.playback && config.playback.autoplay);
+        // TODO: handle firstToggle here
+        this.on(animated);
       } else {
         this.off();
       }
