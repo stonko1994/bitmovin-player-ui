@@ -331,7 +331,7 @@ export namespace UIFactory {
             // new AirPlayToggleButton(),
             new VolumeToggleButton(),
             // new SettingsToggleButton({ settingsPanel: settingsPanel }),
-            // new FullscreenToggleButton(),
+            new FullscreenToggleButton(),
           ],
         }),
         settingsPanel,
