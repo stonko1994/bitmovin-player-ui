@@ -318,7 +318,7 @@ export namespace UIFactory {
               new Spacer(),
           ],
         }),
-        // new RecommendationOverlay(),
+        new RecommendationOverlay(),
         controlBar,
         new TitleBar({
           components: [
