@@ -567,7 +567,7 @@ export namespace UIFactory {
     });
 
     const spatialNavigation = new SpatialNavigation(
-      new RootNavigationGroup(uiContainer, playbackToggleOverlay, gridToggleButton, ...tileOverlay.getComponents()),
+      new RootNavigationGroup(uiContainer, ...tileOverlay.getComponents(), gridToggleButton),
     );
 
     return {
