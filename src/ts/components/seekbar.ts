@@ -300,6 +300,8 @@ export class SeekBar extends Component<SeekBarConfig> {
     player.on(player.exports.PlayerEvent.Ready, playbackPositionHandler);
     // update playback position when it changes
     player.on(player.exports.PlayerEvent.TimeChanged, playbackPositionHandler);
+    // update playback position when the duration changes
+    player.on(player.exports.PlayerEvent.DurationChanged, playbackPositionHandler);
     // update bufferlevel when buffering is complete
     player.on(player.exports.PlayerEvent.StallEnded, playbackPositionHandler);
     // update playback position when a timeshift has finished
