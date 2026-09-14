@@ -1,0 +1,210 @@
+@import '../../variables';
+@import '../../mixins';
+
+// Defines the height of the bars within the seekbar container
+$seekbar-bar-height: calc($font-size / 3);
+// Defines the size of the playback position marker (the knob)
+$seekbar-marker-dimension: calc($seekbar-bar-height * 3);
+
+// sass-lint:disable no-vendor-prefixes
+%bar {
+  -webkit-transform-origin: 0 0; // required for Android 4.4 WebView
+  bottom: 0;
+  box-sizing: border-box;
+  height: $seekbar-bar-height;
+  left: 0;
+  margin: auto;
+  position: absolute;
+  right: auto;
+  top: 0;
+  transform-origin: 0 0;
+  width: 100%;
+}
+
+%ui-seekbar {
+  @extend %ui-component;
+
+  @include hidden;
+  @include focusable;
+
+  display: flex;
+  align-items: center;
+  height: $font-size;
+  position: relative;
+  width: 100%;
+
+  $bar-inset: auto;
+
+  .#{$prefix}-seekbar-playbackposition-marker {
+    @extend %bar;
+
+    @include seekbar-position-marker($seekbar-marker-dimension);
+    background-color: $color-highlight;
+    border-radius: 50%;
+    box-shadow: 0 0 3px 0 transparentize($color: #000, $amount: 0.75);
+  }
+
+  .#{$prefix}-seekbar {
+    @extend %ui-component;
+
+    @include hidden;
+    @include focusable;
+
+    cursor: pointer;
+    height: $seekbar-bar-height;
+    $vertical-margin: calc((1rem - $seekbar-bar-height) / 2);
+    margin: $vertical-margin auto;
+    position: relative;
+    // Reduce width to leave some padding for the focus indicator on the left and right side
+    width: calc(100% - 0.5rem);
+
+    &:after {
+      @include invisible-hit-area(-$vertical-margin, 0, -$vertical-margin, 0);
+      // Uncomment to expose hit area for debugging
+      // background-color: rgba(lime, 0.5);
+    }
+
+    .#{$prefix}-seekbar-bars {
+      @extend %bar;
+      border-radius: 25px;
+      overflow: hidden;
+    }
+
+    .#{$prefix}-seekbar-backdrop {
+      @extend %bar;
+      background-color: transparentize($color-primary, 0.8);
+      margin: $bar-inset 0;
+      width: 100%;
+    }
+
+    .#{$prefix}-seekbar-bufferlevel {
+      @extend %bar;
+      background-color: transparentize($color-primary, 0.8);
+      margin: $bar-inset 0;
+      transition:
+        0.3s linear,
+        0.3s linear;
+      transition-property: transform;
+    }
+
+    .#{$prefix}-seekbar-seekposition {
+      @extend %bar;
+      background-color: transparentize($color-primary, 0.8);
+      margin: $bar-inset 0;
+    }
+
+    .#{$prefix}-seekbar-playbackposition {
+      @extend %bar;
+      background-color: $color-highlight;
+      margin: $bar-inset 0;
+      transition:
+        0.1s linear,
+        0.1s linear;
+      transition-property: transform;
+    }
+
+    .#{$prefix}-seekbar-markers {
+      @extend %bar;
+
+      // Marker width is 2/3 of the seekbar height
+      $marker-width: calc($seekbar-bar-height * (2 / 3));
+      // Marker indicator is 5/3 of the seekbar height to extend the indicator above and below the seekbar by 1/3
+      // of the seekbar height
+      $marker-indicator-height: calc($seekbar-bar-height * (5 / 3));
+      $marker-indicator-border-radius: 0.125em;
+
+      height: $seekbar-bar-height;
+
+      > .#{$prefix}-seekbar-marker {
+        @extend %bar;
+
+        background-color: $color-primary;
+        height: 100%;
+        text-align: center;
+        transition-duration: 0.1s;
+        transition-property: transform;
+        transition-timing-function: linear;
+        width: $marker-width;
+
+        transition:
+          height 0.3s ease,
+          border-radius 0.3s ease,
+          transform 0.1s linear;
+
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        &:hover,
+        &.#{$prefix}-hovered {
+          height: $marker-indicator-height;
+          border-radius: $marker-indicator-border-radius;
+        }
+
+        > .#{$prefix}-seekbar-marker-image {
+          height: $seekbar-bar-height * 4;
+          position: absolute;
+          transform: translate(-50%, calc(-100% - 0.2rem));
+        }
+
+        > .#{$prefix}-seekbar-marker-indicator {
+          height: $marker-indicator-height;
+          width: $marker-width;
+          background-color: $color-primary;
+          border-radius: $marker-indicator-border-radius;
+        }
+      }
+    }
+  }
+
+  // Vertical orientation (e.g. vertical volume slider): swaps the layout axis of the bars.
+  // The fill bars are scaled with scaleY() instead of scaleX() and grow from the bottom,
+  // matching the transforms applied by the SeekBar component for `vertical: true`.
+  // Note: timeline markers are not supported on vertical seek bars; the TimelineMarkersHandler
+  // positions markers along the horizontal axis only.
+  &.#{$prefix}-vertical {
+    height: 100%;
+    justify-content: center;
+    width: $font-size;
+
+    .#{$prefix}-seekbar-playbackposition-marker {
+      @include seekbar-position-marker-vertical($seekbar-marker-dimension);
+    }
+
+    .#{$prefix}-seekbar {
+      $horizontal-margin: calc((1rem - $seekbar-bar-height) / 2);
+      // Reduce height to leave some padding for the focus indicator on the top and bottom side
+      height: calc(100% - 0.5rem);
+      margin: auto $horizontal-margin;
+      width: $seekbar-bar-height;
+
+      &:after {
+        @include invisible-hit-area(0, -$horizontal-margin, 0, -$horizontal-margin);
+      }
+
+      .#{$prefix}-seekbar-bars,
+      .#{$prefix}-seekbar-backdrop,
+      .#{$prefix}-seekbar-bufferlevel,
+      .#{$prefix}-seekbar-seekposition,
+      .#{$prefix}-seekbar-playbackposition {
+        -webkit-transform-origin: 0 100%; // required for Android 4.4 WebView
+        height: 100%;
+        transform-origin: 0 100%;
+      }
+    }
+  }
+
+  // disable animations during seeks
+  &.#{$prefix}-seeking {
+    .#{$prefix}-seekbar {
+      .#{$prefix}-seekbar-bufferlevel,
+      .#{$prefix}-seekbar-playbackposition {
+        transition: none;
+      }
+    }
+  }
+}
+
+.#{$prefix}-ui-seekbar {
+  @extend %ui-seekbar;
+}

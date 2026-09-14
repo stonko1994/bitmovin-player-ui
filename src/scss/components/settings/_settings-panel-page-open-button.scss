@@ -1,0 +1,25 @@
+@import '../../variables';
+@import '../../mixins';
+
+%ui-settingspanelpageopenbutton {
+  @extend %ui-button;
+
+  .#{$prefix}-ui-icon {
+    background-image: svg-load('../../assets/images/settings.svg', fill=$color-icon);
+    max-height: 0.8em;
+  }
+
+  &:hover {
+    @include svg-icon-shadow;
+  }
+
+  &.#{$prefix}-on {
+    .#{$prefix}-ui-icon {
+      transform: rotate(30deg);
+    }
+  }
+}
+
+.#{$prefix}-ui-settingspanelpageopenbutton {
+  @extend %ui-settingspanelpageopenbutton;
+}

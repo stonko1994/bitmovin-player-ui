@@ -1,0 +1,14 @@
+@import '../../variables';
+@import '../../mixins';
+
+.#{$prefix}-ui-casttogglebutton {
+  @extend %ui-button;
+
+  .#{$prefix}-ui-icon {
+    background-image: svg-load('../../assets/images/cast.svg', fill=$color-icon);
+  }
+
+  &:hover {
+    @include svg-icon-shadow;
+  }
+}

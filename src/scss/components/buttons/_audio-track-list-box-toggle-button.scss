@@ -1,0 +1,15 @@
+@import '../../variables';
+
+.#{$prefix}-ui-audio-track-list-box-toggle-button {
+  @extend %ui-settingstogglebutton;
+
+  .#{$prefix}-ui-icon {
+    background-image: svg-load('../../assets/images/audio-tracks.svg', fill=$color-icon);
+  }
+
+  &.#{$prefix}-on {
+    .#{$prefix}-ui-icon {
+      background-image: svg-load('../../assets/images/audio-tracks.svg', fill=$color-icon);
+    }
+  }
+}

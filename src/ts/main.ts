@@ -1,106 +1,185 @@
-export const version: string = '{{VERSION}}';
+// Install polyfills before evaluating exports that construct components at module scope.
+import './polyfills';
+export { version } from './version';
 // Management
-export { UIManager, UIInstanceManager } from './uimanager';
+export * from './UIManager';
+export * from './UIConfig';
+export type { UIComponentConfigMap, UIComponentConfigOverrides } from './UIComponentConfigOverrides';
+export { UIComponentLayoutOverride } from './UIComponentLayoutOverrides';
+export type { UIComponentLayoutOverrideMap, UIComponentLayoutOverrides } from './UIComponentLayoutOverrides';
 // Factories
-export { UIFactory } from './uifactory';
-export { DemoFactory } from './demofactory';
+export { UIFactory } from './UIFactory';
 // Utils
-export { ArrayUtils } from './arrayutils';
-export { StringUtils } from './stringutils';
-export { PlayerUtils } from './playerutils';
-export { UIUtils } from './uiutils';
-export { BrowserUtils } from './browserutils';
-export { StorageUtils } from './storageutils';
-export { ErrorUtils } from './errorutils';
+export { ArrayUtils } from './utils/ArrayUtils';
+export { StringUtils } from './utils/StringUtils';
+export { PlayerUtils } from './utils/PlayerUtils';
+export { UIUtils } from './utils/UIUtils';
+export { BrowserUtils } from './utils/BrowserUtils';
+export { StorageUtils } from './utils/StorageUtils';
+export { UIPreferencesManager } from './utils/UIPreferencesManager';
+export { ErrorUtils } from './utils/ErrorUtils';
+export { ShadowDomManager } from './utils/ShadowDomManager';
+// Localization
+export {
+  i18n,
+  I18n,
+  Vocabulary,
+  Vocabularies,
+  CustomVocabulary,
+  LocalizableText,
+  Localizer,
+} from './localization/i18n';
+// Spatial Navigation
+export { SpatialNavigation } from './spatialnavigation/SpatialNavigation';
+export { NavigationGroup } from './spatialnavigation/NavigationGroup';
+export { RootNavigationGroup } from './spatialnavigation/RootNavigationGroup';
+export {
+  SettingsPanelNavigationGroup,
+  SettingsPanelNavigationGroupConfig,
+} from './spatialnavigation/SettingsPanelNavigationGroup';
 // Components
-export { Button } from './components/button';
-export { ControlBar } from './components/controlbar';
-export { FullscreenToggleButton } from './components/fullscreentogglebutton';
-export { HugePlaybackToggleButton } from './components/hugeplaybacktogglebutton';
-export { PlaybackTimeLabel, PlaybackTimeLabelMode } from './components/playbacktimelabel';
-export { PlaybackToggleButton } from './components/playbacktogglebutton';
-export { SeekBar } from './components/seekbar';
-export { SelectBox } from './components/selectbox';
-export { ItemSelectionList } from './components/itemselectionlist';
-export { SettingsPanel } from './components/settingspanel';
-export { SettingsToggleButton } from './components/settingstogglebutton';
-export { ToggleButton } from './components/togglebutton';
-export { VideoQualitySelectBox } from './components/videoqualityselectbox';
-export { VolumeToggleButton } from './components/volumetogglebutton';
-export { VRToggleButton } from './components/vrtogglebutton';
-export { Watermark } from './components/watermark';
-export { UIContainer } from './components/uicontainer';
-export { Container } from './components/container';
-export { Label } from './components/label';
-export { AudioQualitySelectBox } from './components/audioqualityselectbox';
-export { AudioTrackSelectBox } from './components/audiotrackselectbox';
-export { CastStatusOverlay } from './components/caststatusoverlay';
-export { CastToggleButton } from './components/casttogglebutton';
-export { Component } from './components/component';
-export { ErrorMessageOverlay } from './components/errormessageoverlay';
-export { RecommendationOverlay } from './components/recommendationoverlay';
-export { SeekBarLabel } from './components/seekbarlabel';
-export { SubtitleOverlay } from './components/subtitleoverlay';
-export { SubtitleSelectBox } from './components/subtitleselectbox';
-export { TitleBar } from './components/titlebar';
-export { VolumeControlButton } from './components/volumecontrolbutton';
-export { ClickOverlay } from './components/clickoverlay';
-export { AdSkipButton } from './components/adskipbutton';
-export { AdMessageLabel } from './components/admessagelabel';
-export { AdClickOverlay } from './components/adclickoverlay';
-export { PlaybackSpeedSelectBox } from './components/playbackspeedselectbox';
-export { HugeReplayButton } from './components/hugereplaybutton';
-export { BufferingOverlay } from './components/bufferingoverlay';
-export { CastUIContainer } from './components/castuicontainer';
-export { PlaybackToggleOverlay } from './components/playbacktoggleoverlay';
-export { CloseButton } from './components/closebutton';
-export { MetadataLabel, MetadataLabelContent } from './components/metadatalabel';
-export { AirPlayToggleButton } from './components/airplaytogglebutton';
-export { VolumeSlider } from './components/volumeslider';
-export { PictureInPictureToggleButton } from './components/pictureinpicturetogglebutton';
-export { Spacer } from './components/spacer';
-export { BackgroundColorSelectBox } from './components/subtitlesettings/backgroundcolorselectbox';
-export { BackgroundOpacitySelectBox } from './components/subtitlesettings/backgroundopacityselectbox';
-export { CharacterEdgeSelectBox } from './components/subtitlesettings/characteredgeselectbox';
-export { FontColorSelectBox } from './components/subtitlesettings/fontcolorselectbox';
-export { FontFamilySelectBox } from './components/subtitlesettings/fontfamilyselectbox';
-export { FontOpacitySelectBox } from './components/subtitlesettings/fontopacityselectbox';
-export { FontSizeSelectBox } from './components/subtitlesettings/fontsizeselectbox';
-export { SubtitleSettingSelectBox } from './components/subtitlesettings/subtitlesettingselectbox';
-export { SubtitleSettingsLabel } from './components/subtitlesettings/subtitlesettingslabel';
-export { WindowColorSelectBox } from './components/subtitlesettings/windowcolorselectbox';
-export { WindowOpacitySelectBox } from './components/subtitlesettings/windowopacityselectbox';
-export { SubtitleSettingsResetButton } from './components/subtitlesettings/subtitlesettingsresetbutton';
-export { ListBox } from './components/listbox';
-export { SubtitleListBox } from './components/subtitlelistbox';
-export { AudioTrackListBox } from './components/audiotracklistbox';
-export { SettingsPanelPage } from './components/settingspanelpage';
-export { SettingsPanelPageBackButton } from './components/settingspanelpagebackbutton';
-export { SettingsPanelPageOpenButton } from './components/settingspanelpageopenbutton';
-export { SubtitleSettingsPanelPage } from './components/subtitlesettings/subtitlesettingspanelpage';
-export { SettingsPanelItem } from './components/settingspanelitem';
-export { CustomCloseButton } from './components/customclosebutton';
+export { Button, ButtonConfig, ButtonStyle } from './components/buttons/Button';
+export { ControlBar, ControlBarConfig } from './components/ControlBar';
+export { FullscreenToggleButton } from './components/buttons/FullscreenToggleButton';
+export { HugePlaybackToggleButton } from './components/buttons/HugePlaybackToggleButton';
+export {
+  PlaybackTimeLabel,
+  PlaybackTimeLabelConfig,
+  PlaybackTimeLabelMode,
+} from './components/labels/PlaybackTimeLabel';
+export { PlaybackToggleButton, PlaybackToggleButtonConfig } from './components/buttons/PlaybackToggleButton';
+export { SeekBar, SeekBarConfig, SeekPreviewEventArgs, SeekBarMarker } from './components/seekbar/SeekBar';
+export { SelectBox } from './components/settings/SelectBox';
+export { ItemSelectionList } from './components/lists/ItemSelectionList';
+export {
+  SettingsPanel,
+  SettingsPanelConfig,
+  NavigationDirection,
+  SettingsPanelState,
+} from './components/settings/SettingsPanel';
+export { SettingsToggleButton, SettingsToggleButtonConfig } from './components/settings/SettingsToggleButton';
+export { ToggleButton, ToggleButtonConfig } from './components/buttons/ToggleButton';
+export { VideoQualitySelectBox } from './components/settings/VideoQualitySelectBox';
+export { VolumeToggleButton } from './components/buttons/VolumeToggleButton';
+export { VRToggleButton } from './components/buttons/VRToggleButton';
+export { Watermark, WatermarkConfig } from './components/Watermark';
+export { UIContainer, UIContainerConfig } from './components/UIContainer';
+export { Container, ContainerConfig } from './components/Container';
+export { Label, LabelConfig, LabelStyle } from './components/labels/Label';
+export { AudioQualitySelectBox } from './components/settings/AudioQualitySelectBox';
+export { AudioTrackSelectBox } from './components/settings/AudioTrackSelectBox';
+export { CastStatusOverlay } from './components/overlays/CastStatusOverlay';
+export { CastToggleButton } from './components/buttons/CastToggleButton';
+export {
+  Component,
+  ComponentConfig,
+  ComponentHoverChangedEventArgs,
+  ViewMode,
+  ViewModeChangedEventArgs,
+  ComponentFocusChangedEventArgs,
+} from './components/Component';
+export {
+  ErrorMessageOverlay,
+  ErrorMessageOverlayConfig,
+  ErrorMessageTranslator,
+  ErrorMessageMap,
+} from './components/overlays/ErrorMessageOverlay';
+export { RecommendationOverlay } from './components/overlays/RecommendationOverlay';
+export { RecommendationItem, RecommendationItemConfig } from './components/RecommendationItem';
+export { SeekBarLabel, SeekBarLabelConfig } from './components/seekbar/SeekBarLabel';
+export { SubtitleOverlay, SubtitleOverlayConfig } from './components/overlays/SubtitleOverlay';
+export { SubtitleSelectBox } from './components/settings/SubtitleSelectBox';
+export { TitleBar, TitleBarConfig } from './components/TitleBar';
+export { VolumeControlButton, VolumeControlButtonConfig } from './components/buttons/VolumeControlButton';
+export { ClickOverlay, ClickOverlayConfig } from './components/overlays/ClickOverlay';
+export { AdSkipButton, AdSkipButtonConfig } from './components/ads/AdSkipButton';
+export { AdControlBar, AdControlBarConfig } from './components/ads/AdControlBar';
+export { AdMessageLabel } from './components/ads/AdMessageLabel';
+export { AdClickOverlay } from './components/ads/AdClickOverlay';
+export { AdCounterLabel } from './components/ads/AdCounterLabel';
+export { PlaybackSpeedSelectBox } from './components/settings/PlaybackSpeedSelectBox';
+export { HugeReplayButton } from './components/buttons/HugeReplayButton';
+export { BufferingOverlay, BufferingOverlayConfig } from './components/overlays/BufferingOverlay';
+export { ContextMenu, ContextMenuConfig } from './components/contextmenu/ContextMenu';
+export {
+  InteractiveContextMenuItem,
+  InteractiveContextMenuItemConfig,
+} from './components/contextmenu/InteractiveContextMenuItem';
+export { PlayerContextMenu, PlayerContextMenuConfig } from './components/contextmenu/PlayerContextMenu';
+export { CastUIContainer } from './components/CastUIContainer';
+export { PlaybackToggleOverlay, PlaybackToggleOverlayConfig } from './components/overlays/PlaybackToggleOverlay';
+export { CloseButton, CloseButtonConfig } from './components/buttons/CloseButton';
+export { MetadataLabel, MetadataLabelContent, MetadataLabelConfig } from './components/labels/MetadataLabel';
+export { AirPlayToggleButton } from './components/buttons/AirPlayToggleButton';
+export { VolumeSlider, VolumeSliderConfig } from './components/seekbar/VolumeSlider';
+export { PictureInPictureToggleButton } from './components/buttons/PictureInPictureToggleButton';
+export { CaptionToggleButton } from './components/buttons/CaptionToggleButton';
+export { Spacer } from './components/Spacer';
+export { BackgroundColorSelectBox } from './components/settings/subtitlesettings/BackgroundColorSelectBox';
+export { BackgroundOpacitySelectBox } from './components/settings/subtitlesettings/BackgroundOpacitySelectBox';
+export { CharacterEdgeSelectBox } from './components/settings/subtitlesettings/CharacterEdgeSelectBox';
+export { FontColorSelectBox } from './components/settings/subtitlesettings/FontColorSelectBox';
+export { FontFamilySelectBox } from './components/settings/subtitlesettings/FontFamilySelectBox';
+export { FontOpacitySelectBox } from './components/settings/subtitlesettings/FontOpacitySelectBox';
+export { FontSizeSelectBox } from './components/settings/subtitlesettings/FontSizeSelectBox';
+export {
+  SubtitleSettingSelectBox,
+  SubtitleSettingSelectBoxConfig,
+} from './components/settings/subtitlesettings/SubtitleSettingSelectBox';
+export { WindowColorSelectBox } from './components/settings/subtitlesettings/WindowColorSelectBox';
+export { WindowOpacitySelectBox } from './components/settings/subtitlesettings/WindowOpacitySelectBox';
+export { SubtitleSettingsResetButton } from './components/settings/subtitlesettings/SubtitleSettingsResetButton';
+export { ListBox, ListBoxConfig } from './components/lists/ListBox';
+export { SubtitleListBox, SubtitleListBoxConfig } from './components/lists/SubtitleListBox';
+export { AudioTrackListBox, AudioTrackListBoxConfig } from './components/lists/AudioTrackListBox';
+export { SettingsPanelPage, SettingsPanelPageConfig } from './components/settings/SettingsPanelPage';
+export { SettingsPanelPageBackButton } from './components/settings/SettingsPanelPageBackButton';
+export { SettingsPanelPageOpenButton } from './components/settings/SettingsPanelPageOpenButton';
+export {
+  SubtitleSettingsPanelPage,
+  SubtitleSettingsPanelPageConfig,
+} from './components/settings/subtitlesettings/SubtitleSettingsPanelPage';
+export { SettingsPanelItem, SettingsPanelItemConfig } from './components/settings/SettingsPanelItem';
+export {
+  DynamicSettingsPanelItem,
+  DynamicSettingsPanelItemConfig,
+} from './components/settings/DynamicSettingsPanelItem';
+export { ToggleSettingsPanelItem, ToggleSettingsPanelItemConfig } from './components/settings/ToggleSettingsPanelItem';
+export { ReplayButton } from './components/buttons/ReplayButton';
+export { QuickSeekButton, QuickSeekButtonConfig } from './components/buttons/QuickSeekButton';
+export {
+  ListSelector,
+  ListSelectorConfig,
+  ListItem,
+  ListItemComparator,
+  ListItemFilter,
+  ListItemLabelTranslator,
+} from './components/lists/ListSelector';
+export { AdStatusOverlay } from './components/ads/AdStatusOverlay';
+export { Icon } from './components/Icon';
+export { DismissClickOverlay, DismissClickOverlayConfig } from './components/overlays/DismissClickOverlay';
+export { EcoModeContainer } from './components/EcoModeContainer';
+export { EcoModeToggleButton } from './components/buttons/EcoModeToggleButton';
+export { PersistentPreferencesToggleButton } from './components/buttons/PersistentPreferencesToggleButton';
+export { TvNoiseCanvas } from './components/TvNoiseCanvas';
+export { SmallCenteredPlaybackToggleButton } from './components/buttons/SmallCenteredPlaybackToggleButton';
+export {
+  SettingsPanelSelectOption,
+  SettingsPanelSelectOptionConfig,
+} from './components/settings/SettingsPanelSelectOption';
+export {
+  SettingsPanelPageNavigatorButton,
+  SettingsPanelPageNavigatorConfig,
+} from './components/settings/SettingsPanelPageNavigatorButton';
+export { SettingsPanelSeparator, SettingsPanelSeparatorConfig } from './components/settings/SettingsPanelSeparator';
+export {
+  PlayerInsightsPanel,
+  PlayerInsightsPanelConfig,
+} from './components/panels/player-insights/PlayerInsightsPanel';
+export { InteractiveSettingsPanelItem } from './components/settings/InteractiveSettingsPanelItem';
+export { TouchControlOverlay, TouchControlOverlayConfig } from './components/overlays/TouchControlOverlay';
+export { CharacterEdgeColorSelectBox } from './components/settings/subtitlesettings/CharacterEdgeColorSelectBox';
+export { FontStyleSelectBox } from './components/settings/subtitlesettings/FontStyleSelectBox';
 
-// Object.assign polyfill for ES5/IE9
-// https://developer.mozilla.org/de/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
-if (typeof Object.assign !== 'function') {
-  Object.assign = function(target: any) {
-    'use strict';
-    if (target == null) {
-      throw new TypeError('Cannot convert undefined or null to object');
-    }
-
-    target = Object(target);
-    for (let index = 1; index < arguments.length; index++) {
-      let source = arguments[index];
-      if (source != null) {
-        for (let key in source) {
-          if (Object.prototype.hasOwnProperty.call(source, key)) {
-            target[key] = source[key];
-          }
-        }
-      }
-    }
-    return target;
-  };
-}
+// Custom HTML UI Additions
+export { CustomCloseButton } from './components/buttons/CustomCloseButton';

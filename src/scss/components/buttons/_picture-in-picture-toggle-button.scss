@@ -1,0 +1,20 @@
+@import '../../variables';
+@import '../../mixins';
+
+.#{$prefix}-ui-piptogglebutton {
+  @extend %ui-button;
+
+  .#{$prefix}-ui-icon {
+    background-image: svg-load('../../assets/images/pip.svg', fill=$color-icon);
+  }
+
+  &:hover {
+    @include svg-icon-shadow;
+  }
+
+  &.#{$prefix}-on {
+    .#{$prefix}-ui-icon {
+      background-image: svg-load('../../assets/images/pipX.svg', fill=$color-icon);
+    }
+  }
+}

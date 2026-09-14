@@ -1,0 +1,142 @@
+import { SpatialNavigation } from '../../src/ts/spatialnavigation/SpatialNavigation';
+import { RootNavigationGroup } from '../../src/ts/spatialnavigation/RootNavigationGroup';
+import { UIContainer } from '../../src/ts/components/UIContainer';
+import { NavigationGroup } from '../../src/ts/spatialnavigation/NavigationGroup';
+import { SettingsPanel, SettingsPanelConfig } from '../../src/ts/components/settings/SettingsPanel';
+import { NodeEventSubscriber } from '../../src/ts/spatialnavigation/NodeEventSubscriber';
+import { SeekBarHandler } from '../../src/ts/spatialnavigation/SeekBarHandler';
+import { Action, Direction } from '../../src/ts/spatialnavigation/types';
+
+jest.mock('../../src/ts/spatialnavigation/SeekBarHandler.ts');
+jest.mock('../../src/ts/spatialnavigation/NodeEventSubscriber.ts');
+
+describe('SpatialNavigation', () => {
+  let spatialNavigation: SpatialNavigation;
+  let rootNavigationGroup: RootNavigationGroup;
+  let rootNavigationContainer: UIContainer;
+
+  let otherNavigationGroup: NavigationGroup;
+  let otherNavigationContainer: SettingsPanel<SettingsPanelConfig>;
+
+  beforeEach(() => {
+    rootNavigationContainer = new UIContainer({});
+    rootNavigationGroup = new RootNavigationGroup(rootNavigationContainer);
+    rootNavigationContainer.hide();
+
+    otherNavigationContainer = new SettingsPanel({});
+    otherNavigationContainer.hide();
+    otherNavigationGroup = new NavigationGroup(otherNavigationContainer as any);
+
+    spatialNavigation = new SpatialNavigation(rootNavigationGroup, otherNavigationGroup);
+  });
+
+  describe('default active navigationGroup', () => {
+    it('should set root navigation group as active navigation group if every group is hidden', () => {
+      expect(spatialNavigation.getActiveNavigationGroup()).toEqual(rootNavigationGroup);
+    });
+
+    it('should set visible navigation group as default navigation group', () => {
+      otherNavigationContainer.show();
+      spatialNavigation = new SpatialNavigation(rootNavigationGroup, otherNavigationGroup);
+
+      expect(spatialNavigation.getActiveNavigationGroup()).toEqual(otherNavigationGroup);
+    });
+  });
+
+  describe('activeNavigationGroup', () => {
+    it('should update active navigation group on container show', () => {
+      otherNavigationContainer.show();
+
+      expect(spatialNavigation.getActiveNavigationGroup()).toEqual(otherNavigationGroup);
+    });
+
+    it('should remove navigation group from being active on container hide', () => {
+      otherNavigationContainer.show();
+      otherNavigationContainer.hide();
+
+      expect(spatialNavigation.getActiveNavigationGroup()).not.toEqual(otherNavigationGroup);
+    });
+
+    it('should return previous active navigation group when current group is hidden', () => {
+      otherNavigationContainer.show();
+      otherNavigationContainer.hide();
+
+      expect(spatialNavigation.getActiveNavigationGroup()).toEqual(rootNavigationGroup);
+    });
+  });
+
+  describe('handleKeyEvent', () => {
+    it('should call handle navigation on active group on key event', () => {
+      rootNavigationContainer.show();
+      const rootHandleNavigationSpy = jest.spyOn(rootNavigationGroup, 'handleNavigation').mockReturnValue(true);
+      spatialNavigation['handleKeyEvent'](new KeyboardEvent('keydown', { key: 'Up', keyCode: 38 } as any));
+
+      expect(rootHandleNavigationSpy).toHaveBeenCalledWith(Direction.UP);
+    });
+
+    it('should call handle action on active group on key event', () => {
+      rootNavigationContainer.show();
+      const rootHandleActionSpy = jest.spyOn(rootNavigationGroup, 'handleAction').mockReturnValue(true);
+      spatialNavigation['handleKeyEvent'](new KeyboardEvent('keydown', { key: 'Escape', keyCode: 27 } as any));
+
+      expect(rootHandleActionSpy).toHaveBeenCalledWith(Action.BACK);
+    });
+
+    it('should prevent default when action is handled', () => {
+      rootNavigationContainer.show();
+      jest.spyOn(rootNavigationGroup, 'handleAction').mockReturnValue(true);
+      const event = new KeyboardEvent('keydown', { key: 'Escape', keyCode: 27 } as any);
+      const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+      const stopPropagationSpy = jest.spyOn(event, 'stopPropagation');
+
+      spatialNavigation['handleKeyEvent'](event);
+
+      expect(preventDefaultSpy).toHaveBeenCalled();
+      expect(stopPropagationSpy).toHaveBeenCalled();
+    });
+
+    it('should not prevent default when action is not handled', () => {
+      rootNavigationContainer.show();
+      jest.spyOn(rootNavigationGroup, 'handleAction').mockReturnValue(false);
+      const event = new KeyboardEvent('keydown', { key: 'Escape', keyCode: 27 } as any);
+      const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+      const stopPropagationSpy = jest.spyOn(event, 'stopPropagation');
+
+      spatialNavigation['handleKeyEvent'](event);
+
+      expect(preventDefaultSpy).not.toHaveBeenCalled();
+      expect(stopPropagationSpy).not.toHaveBeenCalled();
+    });
+
+    it('should prevent default for directional keys even when navigation did not move focus', () => {
+      rootNavigationContainer.show();
+      // Navigation at the edge of a group returns false (no focusable target in that direction), but the key must
+      // still be consumed so the platform does not apply its own native focus handling outside the group.
+      jest.spyOn(rootNavigationGroup, 'handleNavigation').mockReturnValue(false);
+      const event = new KeyboardEvent('keydown', { key: 'Up', keyCode: 38 } as any);
+      const preventDefaultSpy = jest.spyOn(event, 'preventDefault');
+      const stopPropagationSpy = jest.spyOn(event, 'stopPropagation');
+
+      spatialNavigation['handleKeyEvent'](event);
+
+      expect(preventDefaultSpy).toHaveBeenCalled();
+      expect(stopPropagationSpy).toHaveBeenCalled();
+    });
+  });
+
+  describe('release', () => {
+    it('should clean up', () => {
+      const nodeEventSubscriberReleaseSpy = jest.spyOn(NodeEventSubscriber.prototype, 'release');
+      const seekBarHandlerReleaseSpy = jest.spyOn(SeekBarHandler.prototype, 'release');
+      const rootGroupRelease = jest.spyOn(rootNavigationGroup, 'release');
+      const otherGroupRelease = jest.spyOn(otherNavigationGroup, 'release');
+
+      spatialNavigation.release();
+
+      expect(nodeEventSubscriberReleaseSpy).toHaveBeenCalled();
+      expect(seekBarHandlerReleaseSpy).toHaveBeenCalled();
+      expect(rootGroupRelease).toHaveBeenCalled();
+      expect(otherGroupRelease).toHaveBeenCalled();
+    });
+  });
+});

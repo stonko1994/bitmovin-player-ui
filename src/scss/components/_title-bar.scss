@@ -1,0 +1,63 @@
+@import '../variables';
+@import '../mixins';
+
+.#{$prefix}-ui-titlebar {
+  @extend %ui-container;
+
+  @include hidden-animated-focusable;
+  @include layout-align-top;
+  @include background-gradient(to top);
+
+  box-sizing: border-box;
+
+  $titlebar-padding: 1.5em;
+  padding: safe-area-max($titlebar-padding, top) safe-area-max($titlebar-padding, right) $titlebar-padding
+    safe-area-max($titlebar-padding, left);
+
+  pointer-events: none;
+
+  .#{$prefix}-container-wrapper {
+    display: flex;
+    flex-direction: column;
+    // sass-lint:disable no-misspelled-properties
+    row-gap: 0.5em;
+  }
+
+  .#{$prefix}-titlebar-row {
+    > .#{$prefix}-container-wrapper {
+      display: flex;
+      flex-direction: row;
+      column-gap: 0.3rem;
+    }
+  }
+
+  > .#{$prefix}-container-wrapper {
+    pointer-events: none;
+
+    .#{$prefix}-label-metadata {
+      cursor: default;
+      pointer-events: none;
+
+      > * {
+        cursor: default;
+        pointer-events: none;
+        display: block;
+        text-shadow: 0 0 5px $color-black;
+      }
+    }
+
+    .#{$prefix}-label-metadata-title {
+      .#{$prefix}-ui-label-text {
+        font-size: $font-size-large;
+        white-space: nowrap;
+      }
+    }
+
+    .#{$prefix}-label-metadata-description {
+      .#{$prefix}-ui-label-text {
+        line-height: 1.5;
+        white-space: normal;
+      }
+    }
+  }
+}

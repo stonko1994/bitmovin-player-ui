@@ -1,0 +1,100 @@
+@import '../../variables';
+
+%ui-settings-panel-item {
+  @include focusable(true, 0, 0);
+
+  padding: 1rem;
+  white-space: nowrap;
+
+  cursor: pointer;
+
+  * {
+    cursor: pointer;
+  }
+
+  @media (hover: hover) {
+    &:hover {
+      background-color: $color-background-menu-hover-overlay;
+    }
+  }
+
+  &:active {
+    background-color: $color-background-menu-hover-overlay;
+  }
+
+  &.#{$prefix}-hidden {
+    display: none;
+  }
+
+  .#{$prefix}-container-wrapper {
+    align-items: center;
+    display: flex;
+  }
+
+  > .#{$prefix}-container-wrapper {
+    column-gap: 10px;
+  }
+
+  .#{$prefix}-ui-label {
+    flex-shrink: 0;
+    line-height: $icon-size;
+    max-width: 100%;
+    min-height: $icon-size;
+    min-width: 0;
+
+    .#{$prefix}-ui-icon {
+      flex: 0 0 auto;
+      width: $icon-size;
+    }
+
+    .#{$prefix}-ui-label-text {
+      overflow-wrap: anywhere;
+      white-space: normal;
+    }
+  }
+
+  .#{$prefix}-ui-label-setting-selected-option {
+    align-self: center;
+    flex-shrink: 1;
+    margin-left: auto;
+    width: fit-content;
+
+    .#{$prefix}-ui-label-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .#{$prefix}-ui-icon {
+      background-image: svg-load('../../assets/images/angle-right.svg', stroke=$color-icon);
+      width: 0.8em;
+      min-width: unset;
+    }
+  }
+
+  &.#{$prefix}-ui-settings-panel-item-select-option {
+    .#{$prefix}-ui-icon {
+      display: none;
+    }
+
+    &.#{$prefix}-selected {
+      .#{$prefix}-ui-icon {
+        display: inline-block;
+        background-image: svg-load('../../assets/images/check.svg', stroke=$color-icon);
+      }
+    }
+  }
+
+  &.#{$prefix}-title-item {
+    background-color: $color-background-menu-title-overlay;
+    font-weight: $font-weight-medium;
+
+    &:hover {
+      background-color: $color-background-menu-hover-overlay;
+    }
+  }
+}
+
+.#{$prefix}-ui-settings-panel-item {
+  @extend %ui-settings-panel-item;
+}

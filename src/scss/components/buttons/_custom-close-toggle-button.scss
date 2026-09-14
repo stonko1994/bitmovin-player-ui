@@ -1,0 +1,14 @@
+@import '../../variables';
+@import '../../mixins';
+
+.#{$prefix}-ui-custom-close-toggle-button {
+  @extend %ui-button;
+
+  .#{$prefix}-ui-icon {
+    background-image: svg-load('../../assets/images/close.svg', fill=$color-icon);
+  }
+
+  &.#{$prefix}-disabled {
+    opacity: 0.3;
+  }
+}

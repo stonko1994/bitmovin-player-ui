@@ -1,0 +1,53 @@
+@import '../variables';
+@import '../mixins';
+
+.#{$prefix}-ui-controlbar {
+  @extend %ui-container;
+
+  @include hidden-animated-focusable;
+  @include layout-align-bottom;
+  @include background-gradient(to bottom);
+
+  box-sizing: border-box;
+
+  $controlbar-padding: 1em;
+  padding: $controlbar-padding safe-area-max($controlbar-padding, right) safe-area-max($controlbar-padding, bottom)
+    safe-area-max($controlbar-padding, left);
+
+  .#{$prefix}-container-wrapper {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .#{$prefix}-controlbar-top,
+  .#{$prefix}-controlbar-bottom {
+    > .#{$prefix}-container-wrapper {
+      display: flex;
+      flex-direction: row;
+      column-gap: 0.3rem;
+      align-items: center;
+    }
+  }
+
+  .#{$prefix}-controlbar-top {
+    > .#{$prefix}-container-wrapper {
+      column-gap: $font-size;
+      margin: 0 0.5em;
+    }
+  }
+
+  .#{$prefix}-controlbar-bottom {
+    // We can't use the row-gap property here because the AdControlBar collapses certain elements which
+    // would result in additional margins.
+    margin-top: 0.5em;
+
+    > .#{$prefix}-container-wrapper {
+      // Only size the inline (horizontal) volume slider; a vertical slider (e.g. the slide-out slider
+      // of the VolumeControlButton) defines its own dimensions.
+      .#{$prefix}-ui-volumeslider:not(.#{$prefix}-vertical) {
+        margin: auto 0.5em;
+        width: 8rem;
+      }
+    }
+  }
+}

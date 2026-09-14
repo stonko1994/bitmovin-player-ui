@@ -1,4 +1,5 @@
 import {
+  AdBreak,
   AdBreakEvent,
   AdEvent,
   AirplayChangedEvent,
@@ -30,9 +31,13 @@ export interface ViewModeAvailabilityChangedEvent extends PlayerEventBase {
 }
 
 export class PlayerEventEmitter {
-  private eventHandlers: { [eventType: string]: PlayerEventCallback[]; } = {};
+  private eventHandlers: { [eventType: string]: PlayerEventCallback<PlayerEvent>[] } = {};
+  private readonly defaultAdBreak: AdBreak = {
+    id: 'Break-ID',
+    scheduleTime: -1,
+  };
 
-  public on(eventType: PlayerEvent, callback: PlayerEventCallback) {
+  public on<T extends PlayerEvent>(eventType: T, callback: PlayerEventCallback<T>) {
     if (!this.eventHandlers[eventType]) {
       this.eventHandlers[eventType] = [];
     }
@@ -42,7 +47,7 @@ export class PlayerEventEmitter {
 
   public fireEvent<E extends PlayerEventBase>(event: E) {
     if (this.eventHandlers[event.type]) {
-      this.eventHandlers[event.type].forEach((callback: PlayerEventCallback) => callback(event));
+      this.eventHandlers[event.type].forEach(callback => callback(event));
     }
   }
 
@@ -75,17 +80,16 @@ export class PlayerEventEmitter {
       size: 1,
       duration: 1,
       isInit: false,
+      url: 'https://bitmovin.com/seg.m4s',
+      timeToFirstByte: 0.5,
     });
   }
 
-  fireAdBreakFinishedEvent(): void {
+  fireAdBreakFinishedEvent(adBreak: AdBreak = this.defaultAdBreak): void {
     this.fireEvent<AdBreakEvent>({
       timestamp: Date.now(),
       type: PlayerEvent.AdBreakFinished,
-      adBreak: {
-        id: 'Break-ID',
-        scheduleTime: -1,
-      },
+      adBreak,
     });
   }
 
@@ -107,6 +111,7 @@ export class PlayerEventEmitter {
       type: PlayerEvent.AdError,
       code: 1001,
       name: 'AdErrorEvent',
+      troubleShootLink: 'https://bitmovin.com/docs/player/web/errors/1001',
     });
   }
 
@@ -141,6 +146,7 @@ export class PlayerEventEmitter {
       type: PlayerEvent.Error,
       code: 1000,
       name: 'ErrorEvent',
+      troubleShootLink: 'https://bitmovin.com/docs/player/web/errors/1000',
     });
   }
 
@@ -276,6 +282,13 @@ export class PlayerEventEmitter {
     });
   }
 
+  fireReadyEvent(): void {
+    this.fireEvent<PlayerEventBase>({
+      type: PlayerEvent.Ready,
+      timestamp: Date.now(),
+    });
+  }
+
   // Subtitle Events
   fireSubtitleAddedEvent(id: string, label: string): void {
     this.fireEvent<SubtitleEvent>({
@@ -305,19 +318,21 @@ export class PlayerEventEmitter {
     } as SubtitleEvent);
   }
 
-  fireSubtitleEnabled(): void {
+  fireSubtitleEnabled(subtitle: Partial<SubtitleTrack> = null): void {
     this.fireEvent<SubtitleEvent>({
       timestamp: Date.now(),
+      subtitle: subtitle ? ({ ...subtitle } as SubtitleTrack) : undefined,
       type: PlayerEvent.SubtitleEnabled,
     } as SubtitleEvent);
   }
 
-  fireSubtitleCueEnterEvent(): void {
+  fireSubtitleCueEnterEvent(overrides: Omit<Partial<SubtitleCueEvent>, 'type'> = {}): void {
     this.fireEvent<SubtitleCueEvent>({
       subtitleId: 'subtitleId',
       start: 0,
       end: 10,
       text: 'Test Subtitle',
+      ...overrides,
       type: PlayerEvent.CueEnter,
     } as SubtitleCueEvent);
   }

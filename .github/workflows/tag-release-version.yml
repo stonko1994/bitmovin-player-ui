@@ -1,0 +1,103 @@
+name: Weekly Release Train
+run-name: Weekly release train ${{ github.event_name == 'workflow_dispatch' && ' (manual)' || '' }}
+
+on:
+  schedule:
+    - cron: '0 12 * * 4' # Every Thursday at 12:00 UTC
+  workflow_dispatch:
+
+concurrency:
+  group: weekly-release-train
+  cancel-in-progress: true
+
+jobs:
+  check-unreleased:
+    name: Check for unreleased changes
+    runs-on: ubuntu-latest
+    outputs:
+      has_unreleased: ${{ steps.check.outputs.has_unreleased }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup dependencies
+        uses: ./.github/actions/setup-dependencies
+
+      - name: Check for unreleased changelog entries
+        uses: actions/github-script@v6
+        id: check
+        with:
+          script: |
+            const { detectReleaseLevel } = require('./.github/scripts/detectReleaseLevel.js');
+
+            try {
+              detectReleaseLevel(core);
+              core.setOutput('has_unreleased', 'true');
+            } catch (error) {
+              core.info(`No unreleased changes found, skipping release: ${error.message}`);
+              core.setOutput('has_unreleased', 'false');
+            }
+
+  prepare-version:
+    name: Detect and build the version number for the release
+    needs: check-unreleased
+    if: needs.check-unreleased.outputs.has_unreleased == 'true'
+    outputs:
+      version_number: ${{ steps.define-release-version.outputs.version_number }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup dependencies
+        uses: ./.github/actions/setup-dependencies
+
+      - name: Read package.json version
+        uses: actions/github-script@v6
+        id: define-package-json-version
+        with:
+          script: |
+            const { version } = require('./package.json')
+            core.setOutput('packageJsonVersion', version)
+
+      - name: Detect release level from changelog
+        uses: actions/github-script@v6
+        id: detect-release-level
+        with:
+          script: |
+            const { detectReleaseLevel } = require('./.github/scripts/detectReleaseLevel.js');
+
+            try {
+              const releaseLevel = detectReleaseLevel(core);
+              core.setOutput('release_level', releaseLevel);
+              return releaseLevel;
+            } catch (error) {
+              core.setFailed(error.message);
+            }
+
+      - name: Define release version
+        uses: actions/github-script@v6
+        id: define-release-version
+        with:
+          script: |
+            const { defineReleaseVersion } = require('./.github/scripts/defineVersion.js');
+            const releaseLevel = '${{ steps.detect-release-level.outputs.release_level }}';
+            const currentVersion = '${{ steps.define-package-json-version.outputs.packageJsonVersion }}';
+
+            const result = defineReleaseVersion({core}, releaseLevel, currentVersion);
+            core.setOutput('version_number', result.full);
+
+  release:
+    needs: [prepare-version]
+    name: Trigger release
+    uses: ./.github/workflows/release.yml
+    with:
+      version_number: ${{ needs.prepare-version.outputs.version_number }}
+      release_type: final
+      branch_name: develop
+    secrets:
+      NPM_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      GCS_CREDENTIALS: ${{ secrets.GCS_CREDENTIALS }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      RELEASE_DEPLOY_KEY: ${{ secrets.RELEASE_DEPLOY_KEY }}
+      GCS_BUCKET: ${{ secrets.GCS_BUCKET }}

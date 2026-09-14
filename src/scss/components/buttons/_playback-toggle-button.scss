@@ -1,0 +1,26 @@
+@import '../../variables';
+@import '../../mixins';
+
+.#{$prefix}-ui-playbacktogglebutton {
+  @extend %ui-button;
+
+  .#{$prefix}-ui-icon {
+    background-image: svg-load('../../assets/images/play.svg', fill=$color-icon);
+  }
+
+  &:hover {
+    @include svg-icon-shadow;
+  }
+
+  &.#{$prefix}-on {
+    .#{$prefix}-ui-icon {
+      background-image: svg-load('../../assets/images/pause.svg', fill=$color-icon);
+    }
+
+    &.#{$prefix}-stoptoggle {
+      .#{$prefix}-ui-icon {
+        background-image: svg-load('../../assets/images/stop.svg', fill=$color-icon);
+      }
+    }
+  }
+}

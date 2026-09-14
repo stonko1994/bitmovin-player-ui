@@ -1,0 +1,38 @@
+@import '../../variables';
+@import '../../mixins';
+
+.#{$prefix}-ui-volumecontrolbutton {
+  @extend %ui-container;
+
+  line-height: 0; // Fix layout for Firefox: removes spurious space in the container
+  position: relative;
+
+  .#{$prefix}-ui-volumeslider {
+    @include animate-slide-in-from-bottom(6em, $animation-duration-short);
+
+    background-color: $color-background;
+    bottom: 100%;
+    height: 6em;
+    position: absolute;
+    width: 1.5em;
+
+    .#{$prefix}-seekbar {
+      bottom: 0.5em;
+      height: auto;
+      left: 0.3em;
+      overflow: hidden;
+      position: absolute;
+      right: 0.3em;
+      top: 0.5em;
+      width: auto;
+    }
+
+    &.#{$prefix}-vertical {
+      .#{$prefix}-seekbar {
+        // The round playback position marker (knob) is wider than the vertical bar
+        // and must not be clipped away
+        overflow: visible;
+      }
+    }
+  }
+}
